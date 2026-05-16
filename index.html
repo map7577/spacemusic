@@ -1,0 +1,942 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Этно-Космос: Звуки Земли</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at center, #0a0a2a 0%, #020210 100%);
+            color: #e0d9f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background: radial-gradient(circle, white 0%, rgba(255,255,255,0.8) 100%);
+            border-radius: 50%;
+            opacity: 0;
+            animation: flyStar linear infinite;
+            box-shadow: 0 0 3px rgba(255,255,255,0.5);
+        }
+        
+        @keyframes flyStar {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+        }
+        
+        .bg-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .bg-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+        
+        .deep-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .deep-star {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: driftStar linear infinite;
+        }
+        
+        @keyframes driftStar {
+            0% { transform: translate(0, 0); opacity: 0.3; }
+            100% { transform: translate(var(--driftX), var(--driftY)); opacity: 0; }
+        }
+ 
+        .game-container {
+            background: rgba(15, 8, 38, 0.85);
+            border: 3px solid #6c42f5;
+            box-shadow: 0 0 40px rgba(108, 66, 245, 0.5), inset 0 0 20px rgba(108, 66, 245, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 35px 40px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 650px;
+            width: 92%;
+            z-index: 1;
+            position: relative;
+        }
+ 
+        h1 { 
+            color: #00f0ff; 
+            font-size: 32px; 
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
+            margin-top: 0;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+ 
+        .info-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            padding: 0 10px;
+        }
+ 
+        .score { 
+            font-size: 20px; 
+            color: #bfaef6; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(0,0,0,0.4);
+            padding: 6px 15px;
+            border-radius: 25px;
+        }
+ 
+        .timer-digital {
+            font-size: 22px;
+            color: #ff0055;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 0, 85, 0.6);
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0.4);
+            padding: 6px 15px;
+            border-radius: 25px;
+        }
+ 
+        .timer-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 3px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+ 
+        .timer-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff0055, #ff5500);
+            box-shadow: 0 0 8px #ff0055;
+            transition: width 0.1s linear;
+        }
+ 
+        .porthole {
+            width: 260px;
+            height: 260px;
+            margin: 0 auto 25px auto;
+            border-radius: 50%;
+            border: 4px solid #00f0ff;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+            background: #0b051d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+ 
+        .porthole img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+ 
+        .radar-pulse {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 240, 255, 0.2);
+            border-radius: 50%;
+            animation: pulse 2s infinite ease-out;
+        }
+ 
+        @keyframes pulse {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+ 
+        .btn-audio {
+            background: linear-gradient(135deg, #00f0ff 0%, #0072ff 100%);
+            color: #080417;
+            border: none;
+            padding: 16px 40px;
+            font-size: 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-bottom: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 5px 20px rgba(0, 240, 255, 0.4);
+            transition: 0.3s;
+            width: 80%;
+        }
+ 
+        .btn-audio:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 240, 255, 0.6);
+        }
+        
+        .btn-audio:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+ 
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+ 
+        .btn-option {
+            background: rgba(255, 255, 255, 0.05);
+            color: #e0d9f6;
+            border: 1.5px solid rgba(108, 66, 245, 0.5);
+            padding: 16px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(5px);
+        }
+ 
+        .btn-option:hover:not(:disabled) { 
+            background: rgba(108, 66, 245, 0.25); 
+            border-color: #00f0ff;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+            color: #fff;
+            transform: scale(1.01);
+        }
+        
+        .btn-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+ 
+        .result-message {
+            margin-top: 25px;
+            font-size: 20px;
+            min-height: 28px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .waiting-hint {
+            color: #00f0ff;
+            font-size: 18px;
+            margin-top: 18px;
+            opacity: 0.8;
+            animation: gentleBlink 1.2s infinite;
+        }
+        
+        @keyframes gentleBlink {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+        }
+        
+        .test-screen {
+            text-align: center;
+        }
+        
+        .test-title {
+            color: #ffaa44;
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255,170,68,0.5);
+        }
+        
+        .test-play-btn {
+            background: linear-gradient(135deg, #00f0ff 0%, #0072ff 100%);
+            color: #080417;
+            border: none;
+            padding: 12px 30px;
+            font-size: 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .letter-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .letter-box {
+            width: 60px;
+            height: 70px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #00f0ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .letter-box input {
+            width: 50px;
+            height: 60px;
+            background: transparent;
+            border: none;
+            color: #00f0ff;
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            outline: none;
+            font-family: monospace;
+        }
+        
+        .letter-box input:focus {
+            border-bottom: 3px solid #00f0ff;
+        }
+        
+        .test-btn {
+            background: linear-gradient(135deg, #ffaa44 0%, #ff6600 100%);
+            color: #080417;
+            border: none;
+            padding: 16px 40px;
+            font-size: 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        
+        .test-hint {
+            color: #ffaa44;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        
+        .welcome-screen {
+            text-align: center;
+        }
+        
+        .astronaut-gif {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 15px auto;
+            display: block;
+            animation: floatAstronaut 3s ease-in-out infinite;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+        }
+        
+        @keyframes floatAstronaut {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        
+        .welcome-text {
+            font-size: 24px;
+            line-height: 1.5;
+            margin-bottom: 35px;
+            color: #e0d9f6;
+            text-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, #00f0ff 0%, #0072ff 100%);
+            color: #080417;
+            border: none;
+            padding: 18px 50px;
+            font-size: 26px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+        
+        .btn-start:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.8);
+        }
+        
+        .info-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            border: 3px solid #00f0ff;
+            border-radius: 30px;
+            padding: 30px 50px;
+            z-index: 100;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.5);
+            animation: popupFade 5s forwards;
+        }
+        
+        .info-popup.correct {
+            border-color: #2ecc71;
+            box-shadow: 0 0 50px rgba(46, 204, 113, 0.5);
+        }
+        
+        .info-popup.wrong {
+            border-color: #e74c3c;
+            box-shadow: 0 0 50px rgba(231, 76, 60, 0.5);
+        }
+        
+        .info-popup h2 {
+            font-size: 36px;
+            margin: 0 0 15px 0;
+        }
+        
+        .info-popup.correct h2 {
+            color: #2ecc71;
+        }
+        
+        .info-popup.wrong h2 {
+            color: #e74c3c;
+        }
+        
+        .info-popup p {
+            color: white;
+            font-size: 28px;
+            margin: 10px 0;
+        }
+        
+        @keyframes popupFade {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); visibility: hidden; }
+        }
+        
+        .final-screen {
+            text-align: center;
+        }
+        
+        .final-success {
+            color: #2ecc71;
+            font-size: 36px;
+            text-shadow: 0 0 15px rgba(46,204,113,0.5);
+            margin-bottom: 20px;
+        }
+        
+        .final-fail {
+            color: #e74c3c;
+            font-size: 36px;
+            text-shadow: 0 0 15px rgba(231,76,60,0.5);
+            margin-bottom: 20px;
+        }
+        
+        .final-score {
+            font-size: 28px;
+            margin: 30px 0;
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="deep-stars" id="deepStarsContainer"></div>
+    <div class="bg-stars" id="bgStarsContainer"></div>
+    <div class="stars-container" id="starsContainer"></div>
+    
+    <div class="game-container" id="game-box"></div>
+ 
+    <script>
+        // ЗВЁЗДНАЯ СИСТЕМА
+        function createDeepStars() {
+            const container = document.getElementById('deepStarsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'deep-star';
+                const size = Math.random() * 1.5 + 0.5;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                const driftX = (Math.random() - 0.5) * 200;
+                const driftY = (Math.random() - 0.5) * 200;
+                star.style.setProperty('--driftX', driftX + 'px');
+                star.style.setProperty('--driftY', driftY + 'px');
+                const duration = 20 + Math.random() * 20;
+                star.style.animationDuration = duration + 's';
+                star.style.animationDelay = Math.random() * duration + 's';
+                container.appendChild(star);
+            }
+        }
+        
+        function createBackgroundStars() {
+            const container = document.getElementById('bgStarsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < 250; i++) {
+                const star = document.createElement('div');
+                star.className = 'bg-star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--duration', (Math.random() * 4 + 2) + 's');
+                star.style.setProperty('--delay', Math.random() * 5 + 's');
+                container.appendChild(star);
+            }
+        }
+        
+        function createFlyingStar() {
+            const container = document.getElementById('starsContainer');
+            if (!container) return;
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 8 + 2;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            const startX = Math.random() * 100;
+            const startY = Math.random() * 100;
+            star.style.left = startX + '%';
+            star.style.top = startY + '%';
+            const centerX = 50, centerY = 50;
+            const dx = centerX - startX, dy = centerY - startY;
+            let speed = size < 3 ? 0.8 + Math.random() * 0.7 : (size < 6 ? 1.5 + Math.random() * 1 : 2.5 + Math.random() * 1.5);
+            const angle = Math.atan2(dy, dx);
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const speedMultiplier = Math.min(2, distance / 30 + 0.5);
+            const finalSpeed = speed * speedMultiplier;
+            const moveX = Math.cos(angle) * finalSpeed * 40;
+            const moveY = Math.sin(angle) * finalSpeed * 40;
+            star.style.setProperty('--dx', moveX + 'px');
+            star.style.setProperty('--dy', moveY + 'px');
+            const duration = Math.min(2, Math.max(0.5, 0.8 + (3 / finalSpeed)));
+            star.style.animationDuration = duration + 's';
+            container.appendChild(star);
+            setTimeout(() => { if (star && star.remove) star.remove(); }, duration * 1000);
+        }
+        
+        let flyingStarsInterval;
+        function startFlyingStars() {
+            if (flyingStarsInterval) clearInterval(flyingStarsInterval);
+            flyingStarsInterval = setInterval(() => {
+                const starsToCreate = Math.floor(Math.random() * 6) + 3;
+                for (let i = 0; i < starsToCreate; i++) createFlyingStar();
+            }, 150);
+        }
+        
+        // ДАННЫЕ ИГРЫ
+        const baseQuizData = [
+            { instrument: "Кантеле", audioSrc: "sounds/kantele.mp3", imgSrc: "images/kantele.png", peopleImgSrc: "images/kareli.png", correctAnswer: "Карелы", instrumentWord: "КАНТЕЛЕ", answerWord: "КАРЕЛЫ", options: ["Карелы", "Татары", "Якуты", "Евреи"] },
+            { instrument: "Хомус (Варган)", audioSrc: "sounds/khomus.mp3", imgSrc: "images/khomus.png", peopleImgSrc: "images/jakuti.png", correctAnswer: "Якуты", instrumentWord: "ХОМУС", answerWord: "ЯКУТЫ", options: ["Башкиры", "Чуваши", "Якуты", "Буряты"] },
+            { instrument: "Балалайка", audioSrc: "sounds/balalaika.mp3", imgSrc: "images/balalaika.png", peopleImgSrc: "images/russki.png", correctAnswer: "Русские", instrumentWord: "БАЛАЛАЙКА", answerWord: "РУССКИЕ", options: ["Орочи", "Русские", "Ханты", "Калмыки"] },
+            { instrument: "Чатхан", audioSrc: "sounds/chatkhan.mp3", imgSrc: "images/chatkhan.png", peopleImgSrc: "images/khakasi.png", correctAnswer: "Хакасы", instrumentWord: "ЧАТХАН", answerWord: "ХАКАСЫ", options: ["Хакасы", "Алтайцы", "Тувинцы", "Коми"] }
+        ];
+        
+        let wrongInstruments = [];
+        let testInstrument = null;
+        let testAudio = null;
+        let testPassed = false;
+        
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+        
+        let quizData = [], currentQuestionIndex = 0, score = 0, currentAudio = null, gameActive = false;
+        let timeLeft = 30, timerInterval = null, totalTime = 30;
+        let waitingForSignal = true, isLocked = false, currentQuestionReady = false;
+        let playBtn, timerText, timerLine, scoreBoard, resultMsgDiv, instrumentImg, radarDiv, optionsBox, waitingHint;
+        
+        function showInfoPopup(instrument, people, isCorrect) {
+            const popup = document.createElement('div');
+            popup.className = `info-popup ${isCorrect ? 'correct' : 'wrong'}`;
+            popup.innerHTML = `
+                <h2>${isCorrect ? 'ВЕРНО' : 'НЕВЕРНО'}</h2>
+                <p>${instrument}</p>
+                <p>${people}</p>
+            `;
+            document.body.appendChild(popup);
+            setTimeout(() => {
+                if (popup && popup.remove) popup.remove();
+            }, 5000);
+        }
+        
+        // ПРОВЕРОЧНОЕ ИСПЫТАНИЕ
+        function showTestScreen() {
+            gameActive = false;
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+            if (timerInterval) clearInterval(timerInterval);
+            
+            if (wrongInstruments.length > 0) {
+                const wrongInstrumentName = wrongInstruments[0];
+                testInstrument = baseQuizData.find(item => item.instrument === wrongInstrumentName || item.instrumentWord === wrongInstrumentName);
+            }
+            if (!testInstrument) {
+                const randomIndex = Math.floor(Math.random() * baseQuizData.length);
+                testInstrument = { ...baseQuizData[randomIndex] };
+            }
+            
+            const word = testInstrument.instrumentWord;
+            const letters = word.split('');
+            
+            const gameContainer = document.getElementById('game-box');
+            gameContainer.innerHTML = `
+                <div class="test-screen">
+                    <div class="test-title">ФИНАЛЬНОЕ ИСПЫТАНИЕ</div>
+                    <div class="porthole" style="width:220px; height:220px; margin:0 auto 25px auto;">
+                        <img id="test-img" src="${testInstrument.imgSrc}" style="opacity:1; transform:scale(1); width:100%; height:100%; object-fit:cover;">
+                    </div>
+                    <button class="test-play-btn" id="testPlayBtn">ПРОСЛУШАТЬ СИГНАЛ</button>
+                    <div class="letter-inputs" id="letterInputs"></div>
+                    <button class="test-btn" id="submitTest">ПРОВЕРИТЬ</button>
+                    <div class="test-hint" id="testHint">Введите название инструмента по буквам</div>
+                </div>
+            `;
+            
+            testAudio = new Audio(testInstrument.audioSrc);
+            document.getElementById('testPlayBtn').onclick = () => {
+                if (testAudio) {
+                    testAudio.currentTime = 0;
+                    testAudio.play().catch(e => console.error(e));
+                }
+            };
+            
+            const inputsContainer = document.getElementById('letterInputs');
+            for (let i = 0; i < letters.length; i++) {
+                const box = document.createElement('div');
+                box.className = 'letter-box';
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.maxLength = 1;
+                input.dataset.index = i;
+                input.style.textTransform = 'uppercase';
+                input.addEventListener('input', function(e) {
+                    this.value = this.value.toUpperCase().substring(0,1);
+                    if (this.value.length === 1 && i < letters.length - 1) {
+                        const nextInput = inputsContainer.children[i+1]?.querySelector('input');
+                        if (nextInput) nextInput.focus();
+                    }
+                });
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && i > 0) {
+                        const prevInput = inputsContainer.children[i-1]?.querySelector('input');
+                        if (prevInput) prevInput.focus();
+                    }
+                });
+                box.appendChild(input);
+                inputsContainer.appendChild(box);
+            }
+            
+            document.getElementById('submitTest').onclick = () => {
+                let userWord = '';
+                const inputs = document.querySelectorAll('#letterInputs input');
+                for (let input of inputs) {
+                    userWord += input.value;
+                }
+                
+                if (userWord === testInstrument.instrumentWord) {
+                    testPassed = true;
+                    document.getElementById('testHint').innerHTML = 'ПРАВИЛЬНО!';
+                    document.getElementById('testHint').style.color = '#2ecc71';
+                    document.getElementById('submitTest').disabled = true;
+                    setTimeout(() => {
+                        showFinalScreen();
+                    }, 1500);
+                } else {
+                    testPassed = false;
+                    document.getElementById('testHint').innerHTML = `НЕПРАВИЛЬНО! Правильный ответ: ${testInstrument.instrumentWord}`;
+                    document.getElementById('testHint').style.color = '#e74c3c';
+                    document.getElementById('submitTest').disabled = true;
+                    setTimeout(() => {
+                        showFinalScreen();
+                    }, 2500);
+                }
+            };
+        }
+        
+        function showFinalScreen() {
+            const gameContainer = document.getElementById('game-box');
+            if (testPassed) {
+                gameContainer.innerHTML = `
+                    <div class="final-screen">
+                        <div class="final-success">МИССИЯ ЗАВЕРШЕНА</div>
+                        <div class="final-score">Расшифровано сигналов: ${score} из ${quizData.length}</div>
+                        <button class="btn-audio" id="restartBtn" style="font-size:24px;">ПОПРОБОВАТЬ СНОВА</button>
+                    </div>
+                `;
+            } else {
+                gameContainer.innerHTML = `
+                    <div class="final-screen">
+                        <div class="final-fail">МИССИЯ НЕ ЗАВЕРШЕНА</div>
+                        <div class="final-score">Расшифровано сигналов: ${score} из ${quizData.length}</div>
+                        <button class="btn-audio" id="restartBtn" style="font-size:24px;">ПОПРОБОВАТЬ СНОВА</button>
+                    </div>
+                `;
+            }
+            document.getElementById('restartBtn').onclick = () => { 
+                wrongInstruments = [];
+                testInstrument = null;
+                testPassed = false;
+                if (testAudio) { testAudio.pause(); testAudio = null; }
+                showWelcomeScreen(); 
+            };
+        }
+        
+        // ПРИВЕТСТВЕННЫЙ ЭКРАН
+        function showWelcomeScreen() {
+            const gameContainer = document.getElementById('game-box');
+            gameContainer.innerHTML = `
+                <div class="welcome-screen">
+                    <img class="astronaut-gif" src="animation/austronaft.gif" alt="Космонавт" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23333%22/%3E%3Ctext x=%2250%22 y=%2265%22 text-anchor=%22middle%22 fill=%22%2300f0ff%22 font-size=%2230%22%3E🚀%3C/text%3E%3C/svg%3E'">
+                    <h1>ЭТНО-КОСМОС: СИГНАЛЫ ЗЕМЛИ</h1>
+                    <div class="welcome-text">
+                        Дорогой межзвездный странник по виртуальной Вселенной народов России!<br><br>
+                        Тебе предстоит важная миссия. С Земли приходят сигналы. Расшифруй их и определи, инструмент какого народа звучит.<br><br>
+                        Каждый раз инструменты идут в случайном порядке!Запоминай названия инструментов, особенно если ответ будет неверным. В конце тебя ждёт финальное испытание!
+                    </div>
+                    <button class="btn-start" id="startBtn">СТАРТ МИССИИ</button>
+                </div>
+            `;
+            document.getElementById('startBtn').onclick = () => startGame();
+        }
+        
+        function startGame() {
+            wrongInstruments = [];
+            quizData = shuffleArray(baseQuizData);
+            gameActive = true;
+            currentQuestionIndex = 0;
+            score = 0;
+            waitingForSignal = true;
+            isLocked = false;
+            currentQuestionReady = false;
+            if (timerInterval) clearInterval(timerInterval);
+            buildGameInterface();
+            loadQuestionDataOnly();
+            if (playBtn) playBtn.onclick = (e) => { e.preventDefault(); acceptSignalAndPlay(); };
+        }
+        
+        function buildGameInterface() {
+            const gameContainer = document.getElementById('game-box');
+            gameContainer.innerHTML = `
+                <h1>ЭТНО-КОСМОС: СИГНАЛЫ</h1>
+                <div class="info-panel"><div class="score" id="score-board">Орбита: 0 / 0</div><div class="timer-digital" id="timer-text">ОЖИДАНИЕ</div></div>
+                <div class="timer-bar-container"><div class="timer-bar" id="timer-line" style="width:100%"></div></div>
+                <div class="porthole"><div class="radar-pulse" id="radar"></div><img id="instrument-img" src=""></div>
+                <button class="btn-audio" id="play-btn">ПРИНЯТЬ СИГНАЛ</button>
+                <div class="options-container" id="options-box"></div>
+                <div class="result-message" id="result-msg"></div>
+                <div class="waiting-hint" id="waitingHint">Нажмите «ПРИНЯТЬ СИГНАЛ», чтобы начать приём</div>
+            `;
+            playBtn = document.getElementById('play-btn');
+            timerText = document.getElementById('timer-text');
+            timerLine = document.getElementById('timer-line');
+            scoreBoard = document.getElementById('score-board');
+            resultMsgDiv = document.getElementById('result-msg');
+            instrumentImg = document.getElementById('instrument-img');
+            radarDiv = document.getElementById('radar');
+            optionsBox = document.getElementById('options-box');
+            waitingHint = document.getElementById('waitingHint');
+        }
+        
+        function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
+        function resetTimerUI() { if (timerText) timerText.innerText = `ОЖИДАНИЕ`; if (timerLine) timerLine.style.width = `100%`; }
+        function updateTimerUI() { if (!gameActive || waitingForSignal || !timerInterval) return; if (timerText) timerText.innerText = `ВРЕМЯ: ${timeLeft}с`; if (timerLine) timerLine.style.width = `${(timeLeft/totalTime)*100}%`; }
+        
+        function startTimerAfterSignal() {
+            if (timerInterval) stopTimer();
+            timeLeft = totalTime;
+            updateTimerUI();
+            timerInterval = setInterval(() => {
+                if (!gameActive || waitingForSignal) return;
+                timeLeft--;
+                updateTimerUI();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    if (!isLocked && !waitingForSignal && gameActive) handleTimeOut();
+                }
+            }, 1000);
+        }
+        
+        function handleTimeOut() {
+            if (isLocked || currentQuestionIndex >= quizData.length || !gameActive) return;
+            isLocked = true;
+            waitingForSignal = true;
+            const q = quizData[currentQuestionIndex];
+            if (radarDiv) radarDiv.style.display = "none";
+            if (instrumentImg) { instrumentImg.src = q.peopleImgSrc; instrumentImg.style.opacity = "1"; instrumentImg.style.transform = "scale(1)"; }
+            document.querySelectorAll('.btn-option').forEach(btn => btn.disabled = true);
+            if (playBtn) playBtn.disabled = true;
+            if (resultMsgDiv) resultMsgDiv.innerHTML = `<span style="color:#ff0055;">ВРЕМЯ ИСТЕКЛО: Источник — ${q.correctAnswer} (${q.instrument}).</span>`;
+            if (waitingHint) waitingHint.innerText = "Потеря связи. Переход к следующему сигналу...";
+            
+            showInfoPopup(q.instrument, q.correctAnswer, false);
+            
+            if (!wrongInstruments.includes(q.instrument)) {
+                wrongInstruments.push(q.instrument);
+            }
+            
+            setTimeout(() => {
+                if (!gameActive) return;
+                currentQuestionIndex++;
+                isLocked = false;
+                waitingForSignal = true;
+                loadQuestionDataOnly();
+                if (playBtn) playBtn.disabled = false;
+                if (waitingHint) waitingHint.innerText = "Нажмите «ПРИНЯТЬ СИГНАЛ», чтобы начать приём";
+            }, 5000);
+        }
+        
+        function loadQuestionDataOnly() {
+            if (!gameActive) return;
+            if (currentQuestionIndex >= quizData.length) { 
+                showTestScreen();
+                return; 
+            }
+            if (resultMsgDiv) resultMsgDiv.innerText = "";
+            if (instrumentImg) { instrumentImg.style.opacity = "0"; instrumentImg.style.transform = "scale(0.8)"; }
+            if (radarDiv) radarDiv.style.display = "block";
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+            const q = quizData[currentQuestionIndex];
+            currentAudio = new Audio(q.audioSrc);
+            if (scoreBoard) scoreBoard.innerText = `Орбита: ${score} / ${quizData.length}`;
+            if (optionsBox) {
+                optionsBox.innerHTML = "";
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-option';
+                    btn.innerText = opt;
+                    btn.disabled = true;
+                    btn.onclick = () => checkAnswer(opt, btn);
+                    optionsBox.appendChild(btn);
+                });
+            }
+            resetTimerUI();
+            waitingForSignal = true;
+            currentQuestionReady = true;
+            if (playBtn) playBtn.disabled = false;
+            if (radarDiv) radarDiv.style.display = "block";
+            if (instrumentImg) instrumentImg.style.opacity = "0";
+        }
+        
+        function acceptSignalAndPlay() {
+            if (!gameActive || !currentQuestionReady || !waitingForSignal || isLocked) {
+                if (!waitingForSignal && !isLocked && gameActive && resultMsgDiv) {
+                    resultMsgDiv.innerHTML = `<span style="color:#ffaa44;">Сигнал уже принят, выберите народ!</span>`;
+                    setTimeout(() => { if (resultMsgDiv && resultMsgDiv.innerText.includes("Сигнал уже принят")) resultMsgDiv.innerText = ""; }, 1200);
+                }
+                return;
+            }
+            const q = quizData[currentQuestionIndex];
+            if (instrumentImg) { instrumentImg.src = q.imgSrc; instrumentImg.style.opacity = "1"; instrumentImg.style.transform = "scale(1)"; }
+            if (radarDiv) radarDiv.style.display = "none";
+            if (currentAudio) { currentAudio.currentTime = 0; currentAudio.play().catch(e => console.error(e)); }
+            waitingForSignal = false;
+            currentQuestionReady = true;
+            document.querySelectorAll('.btn-option').forEach(btn => btn.disabled = false);
+            startTimerAfterSignal();
+            if (waitingHint) waitingHint.innerText = "Сигнал принят! Идёт расшифровка... Выберите народ!";
+            setTimeout(() => { if (!waitingForSignal && waitingHint && gameActive) waitingHint.innerText = "Анализируйте сигнал и выбирайте ответ"; }, 1500);
+        }
+        
+        function checkAnswer(selected, btn) {
+            if (!gameActive || waitingForSignal || isLocked) {
+                if (waitingForSignal && !isLocked && gameActive && resultMsgDiv) {
+                    resultMsgDiv.innerHTML = `<span style="color:#ffaa44;">Сначала примите сигнал! Нажмите «ПРИНЯТЬ СИГНАЛ».</span>`;
+                    setTimeout(() => { if (resultMsgDiv && resultMsgDiv.innerText.includes("Сначала примите сигнал")) resultMsgDiv.innerText = ""; }, 1500);
+                }
+                return;
+            }
+            stopTimer();
+            isLocked = true;
+            waitingForSignal = true;
+            const q = quizData[currentQuestionIndex];
+            document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
+            if (playBtn) playBtn.disabled = true;
+            if (radarDiv) radarDiv.style.display = "none";
+            if (instrumentImg) { instrumentImg.src = q.peopleImgSrc; instrumentImg.style.opacity = "1"; instrumentImg.style.transform = "scale(1)"; }
+            const isCorrect = (selected === q.correctAnswer);
+            if (isCorrect) { 
+                score++; 
+                btn.style.background = "rgba(46,204,113,0.3)"; 
+                btn.style.borderColor = "#2ecc71"; 
+                if (resultMsgDiv) resultMsgDiv.innerHTML = `<span style="color:#2ecc71;">УСПЕШНО: Идентификация пройдена. Это ${q.instrument}.</span>`;
+            } else { 
+                btn.style.background = "rgba(231,76,60,0.3)"; 
+                btn.style.borderColor = "#e74c3c"; 
+                if (resultMsgDiv) resultMsgDiv.innerHTML = `<span style="color:#e74c3c;">ОШИБКА: Источник — ${q.correctAnswer} (${q.instrument}).</span>`;
+                if (!wrongInstruments.includes(q.instrument)) {
+                    wrongInstruments.push(q.instrument);
+                }
+            }
+            
+            showInfoPopup(q.instrument, q.correctAnswer, isCorrect);
+            
+            if (scoreBoard) scoreBoard.innerText = `Орбита: ${score} / ${quizData.length}`;
+            if (waitingHint) waitingHint.innerText = "Анализ завершён. Загрузка следующего сигнала...";
+            setTimeout(() => {
+                if (!gameActive) return;
+                currentQuestionIndex++;
+                isLocked = false;
+                waitingForSignal = true;
+                loadQuestionDataOnly();
+                if (playBtn) playBtn.disabled = false;
+                if (waitingHint) waitingHint.innerText = "Нажмите «ПРИНЯТЬ СИГНАЛ», чтобы начать приём";
+            }, 5000);
+        }
+        
+        createDeepStars();
+        createBackgroundStars();
+        startFlyingStars();
+        showWelcomeScreen();
+    </script>
+</body>
+</html>
