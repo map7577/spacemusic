@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,6 @@
             overflow-x: hidden;
         }
         
-        /* Разрешаем прокрутку */
         body {
             overflow-y: auto !important;
             height: auto !important;
@@ -478,139 +477,39 @@
             border-radius: 20px;
         }
         
-        /* Адаптация для мобильных телефонов */
         @media (max-width: 600px) {
-            .game-container {
-                padding: 15px;
-                max-width: 100%;
-            }
-            
-            .porthole {
-                width: 160px;
-                height: 160px;
-            }
-            
-            .btn-option {
-                font-size: 16px;
-                padding: 10px;
-            }
-            
-            .letter-box {
-                width: 45px;
-                height: 55px;
-            }
-            
-            .letter-box input {
-                width: 38px;
-                height: 48px;
-                font-size: 26px;
-            }
-            
-            .welcome-text {
-                font-size: 14px;
-            }
-            
-            h1 {
-                font-size: 22px;
-            }
-            
-            .score, .timer-digital {
-                font-size: 14px;
-                padding: 6px 12px;
-            }
-            
-            .btn-audio, .btn-start {
-                font-size: 18px;
-                padding: 12px 25px;
-            }
-            
-            .info-popup {
-                padding: 15px 25px;
-                width: 85%;
-            }
-            
-            .info-popup h2 {
-                font-size: 22px;
-            }
-            
-            .info-popup p {
-                font-size: 18px;
-            }
+            .game-container { padding: 15px; max-width: 100%; }
+            .porthole { width: 160px; height: 160px; }
+            .btn-option { font-size: 16px; padding: 10px; }
+            .letter-box { width: 45px; height: 55px; }
+            .letter-box input { width: 38px; height: 48px; font-size: 26px; }
+            .welcome-text { font-size: 14px; }
+            h1 { font-size: 22px; }
+            .score, .timer-digital { font-size: 14px; padding: 6px 12px; }
+            .btn-audio, .btn-start { font-size: 18px; padding: 12px 25px; }
+            .info-popup { padding: 15px 25px; width: 85%; }
+            .info-popup h2 { font-size: 22px; }
+            .info-popup p { font-size: 18px; }
         }
         
-        /* Планшеты */
         @media (min-width: 601px) and (max-width: 1024px) {
-            .game-container {
-                max-width: 650px;
-            }
-            
-            .porthole {
-                width: 200px;
-                height: 200px;
-            }
-            
-            .btn-option {
-                font-size: 18px;
-                padding: 12px;
-            }
+            .game-container { max-width: 650px; }
+            .porthole { width: 200px; height: 200px; }
+            .btn-option { font-size: 18px; padding: 12px; }
         }
         
-        /* Большие экраны компьютеров */
         @media (min-width: 1025px) {
-            .game-container {
-                max-width: 800px;
-                padding: 35px;
-            }
-            
-            .porthole {
-                width: 260px;
-                height: 260px;
-            }
-            
-            h1 {
-                font-size: 36px;
-            }
-            
-            .score, .timer-digital {
-                font-size: 20px;
-                padding: 10px 20px;
-            }
-            
-            .btn-option {
-                font-size: 24px;
-                padding: 16px;
-            }
-            
-            .btn-audio {
-                font-size: 24px;
-                padding: 16px 40px;
-                max-width: 350px;
-            }
-            
-            .welcome-text {
-                font-size: 20px;
-            }
-            
-            .btn-start {
-                font-size: 26px;
-                padding: 18px 50px;
-                max-width: 350px;
-            }
-            
-            .letter-box {
-                width: 65px;
-                height: 75px;
-            }
-            
-            .letter-box input {
-                width: 55px;
-                height: 65px;
-                font-size: 38px;
-            }
-            
-            .test-title {
-                font-size: 32px;
-            }
+            .game-container { max-width: 800px; padding: 35px; }
+            .porthole { width: 260px; height: 260px; }
+            h1 { font-size: 36px; }
+            .score, .timer-digital { font-size: 20px; padding: 10px 20px; }
+            .btn-option { font-size: 24px; padding: 16px; }
+            .btn-audio { font-size: 24px; padding: 16px 40px; max-width: 350px; }
+            .welcome-text { font-size: 20px; }
+            .btn-start { font-size: 26px; padding: 18px 50px; max-width: 350px; }
+            .letter-box { width: 65px; height: 75px; }
+            .letter-box input { width: 55px; height: 65px; font-size: 38px; }
+            .test-title { font-size: 32px; }
         }
     </style>
 </head>
@@ -622,7 +521,6 @@
     <div class="game-container" id="game-box"></div>
  
     <script>
-        // ЗВЁЗДНАЯ СИСТЕМА
         function createDeepStars() {
             const container = document.getElementById('deepStarsContainer');
             if (!container) return;
@@ -702,12 +600,11 @@
             }, 200);
         }
         
-        // ДАННЫЕ ИГРЫ
         const baseQuizData = [
-            { instrument: "Кантеле", audioSrc: "sounds/kantele.mp3", imgSrc: "images/kantele.png", peopleImgSrc: "images/kareli.png", correctAnswer: "Карелы", instrumentWord: "КАНТЕЛЕ", answerWord: "КАРЕЛЫ", options: ["Карелы", "Татары", "Якуты", "Чеченцы"] },
+            { instrument: "Кантеле", audioSrc: "sounds/kantele.mp3", imgSrc: "images/kantele.png", peopleImgSrc: "images/kareli.png", correctAnswer: "Карелы", instrumentWord: "КАНТЕЛЕ", answerWord: "КАРЕЛЫ", options: ["Карелы", "Татары", "Якуты", "Евреи"] },
             { instrument: "Хомус (Варган)", audioSrc: "sounds/khomus.mp3", imgSrc: "images/khomus.png", peopleImgSrc: "images/jakuti.png", correctAnswer: "Якуты", instrumentWord: "ХОМУС", answerWord: "ЯКУТЫ", options: ["Башкиры", "Чуваши", "Якуты", "Буряты"] },
-            { instrument: "Балалайка", audioSrc: "sounds/balalaika.mp3", imgSrc: "images/balalaika.png", peopleImgSrc: "images/russki.png", correctAnswer: "Русские", instrumentWord: "БАЛАЛАЙКА", answerWord: "РУССКИЕ", options: ["Черкесы", "Русские", "Ханты", "Калмыки"] },
-            { instrument: "Чатхан", audioSrc: "sounds/chatkhan.mp3", imgSrc: "images/chatkhan.png", peopleImgSrc: "images/khakasi.png", correctAnswer: "Хакасы", instrumentWord: "ЧАТХАН", answerWord: "ХАКАСЫ", options: ["Хакасы", "Алтайцы", "Тувинцы", "Чукчи"] }
+            { instrument: "Балалайка", audioSrc: "sounds/balalaika.mp3", imgSrc: "images/balalaika.png", peopleImgSrc: "images/russki.png", correctAnswer: "Русские", instrumentWord: "БАЛАЛАЙКА", answerWord: "РУССКИЕ", options: ["Коми", "Русские", "Ханты", "Калмыки"] },
+            { instrument: "Чатхан", audioSrc: "sounds/chatkhan.mp3", imgSrc: "images/chatkhan.png", peopleImgSrc: "images/khakasi.png", correctAnswer: "Хакасы", instrumentWord: "ЧАТХАН", answerWord: "ХАКАСЫ", options: ["Хакасы", "Алтайцы", "Тувинцы", "Марийцы"] }
         ];
         
         let wrongInstruments = [];
@@ -743,7 +640,6 @@
             }, 4500);
         }
         
-        // ПРОВЕРОЧНОЕ ИСПЫТАНИЕ
         function showTestScreen() {
             gameActive = false;
             if (currentAudio) { currentAudio.pause(); currentAudio = null; }
@@ -864,7 +760,6 @@
             };
         }
         
-        // ПРИВЕТСТВЕННЫЙ ЭКРАН
         function showWelcomeScreen() {
             const gameContainer = document.getElementById('game-box');
             gameContainer.innerHTML = `
@@ -873,10 +768,13 @@
                     <h1>ЭТНО-КОСМОС: СИГНАЛЫ ЗЕМЛИ</h1>
                     <div class="welcome-text">
                         Здравствуй, межзвездный странник!<br><br>
-                        Твой корабль «755» вошёл в гравитационное поле звёздной системы народов России. Здесь пространство искривлено не массивными телами, а звуками этно-инструментов. Каждый народ оставил свой музыкальный след – особый сигнал, который можно услышать лишь на определённой орбите.<br><br>
-                       Твоя миссия – совершить гравитационный манёвр от орбиты к орбите, принимая и расшифровывая этнические сигналы.<br><br>
-                        На каждой орбите тебя ждёт загадка: инструмент какого народа звучит в потоке космической радиоволны? Будь внимателен! Каждый неверный ответ создаёт помехи в навигации, и на финальном рубеже тебе придётся пройти проверочное испытание – точно назвать инструмент, чей сигнал ты мог пропустить. Запоминай мелодии. От твоей памяти зависит успех миссии.<br><br>
-Приготовься. Гравитационный манёвр к первой орбите разрешаю.
+                        Твой корабль «775» вошёл в гравитационное поле звёздной системы народов России».<br><br>
+                        Здесь пространство искривлено не массивными телами, а звуками этно-инструментов. Каждый народ оставил свой музыкальный след – особый сигнал, который можно услышать лишь на определённой орбите.<br><br>
+                        Твоя миссия – совершить гравитационный манёвр от орбиты к орбите, принимая и расшифровывая этнические сигналы Земли.<br><br>
+                        На каждой орбите тебя ждёт загадка: инструмент какого народа звучит в потоке космической радиоволны?<br><br>
+                        Будь внимателен! Каждый неверный ответ создаёт помехи в навигации, и на финальном рубеже тебе придётся пройти проверочное испытание – точно назвать инструмент, чей сигнал ты мог пропустить.<br><br>
+                        Запоминай мелодии. От твоей памяти зависит успех миссии.<br><br>
+                        Приготовься. Гравитационный манёвр к первой орбите разрешаю.
                     </div>
                     <button class="btn-start" id="startBtn">СТАРТ МИССИИ</button>
                 </div>
@@ -978,7 +876,14 @@
                 return; 
             }
             if (resultMsgDiv) resultMsgDiv.innerText = "";
-            if (instrumentImg) { instrumentImg.style.opacity = "0"; instrumentImg.style.transform = "scale(0.8)"; }
+            
+            // СБРАСЫВАЕМ ПРЕДЫДУЩУЮ КАРТИНКУ!
+            if (instrumentImg) {
+                instrumentImg.src = "";
+                instrumentImg.style.opacity = "0";
+                instrumentImg.style.transform = "scale(0.8)";
+            }
+            
             if (radarDiv) radarDiv.style.display = "block";
             if (currentAudio) { currentAudio.pause(); currentAudio = null; }
             const q = quizData[currentQuestionIndex];
@@ -1000,7 +905,6 @@
             currentQuestionReady = true;
             if (playBtn) playBtn.disabled = false;
             if (radarDiv) radarDiv.style.display = "block";
-            if (instrumentImg) instrumentImg.style.opacity = "0";
         }
         
         function acceptSignalAndPlay() {
@@ -1012,7 +916,11 @@
                 return;
             }
             const q = quizData[currentQuestionIndex];
-            if (instrumentImg) { instrumentImg.src = q.imgSrc; instrumentImg.style.opacity = "1"; instrumentImg.style.transform = "scale(1)"; }
+            if (instrumentImg) { 
+                instrumentImg.src = q.imgSrc; 
+                instrumentImg.style.opacity = "1"; 
+                instrumentImg.style.transform = "scale(1)"; 
+            }
             if (radarDiv) radarDiv.style.display = "none";
             if (currentAudio) { currentAudio.currentTime = 0; currentAudio.play().catch(e => console.error(e)); }
             waitingForSignal = false;
@@ -1038,7 +946,11 @@
             document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
             if (playBtn) playBtn.disabled = true;
             if (radarDiv) radarDiv.style.display = "none";
-            if (instrumentImg) { instrumentImg.src = q.peopleImgSrc; instrumentImg.style.opacity = "1"; instrumentImg.style.transform = "scale(1)"; }
+            if (instrumentImg) { 
+                instrumentImg.src = q.peopleImgSrc; 
+                instrumentImg.style.opacity = "1"; 
+                instrumentImg.style.transform = "scale(1)"; 
+            }
             const isCorrect = (selected === q.correctAnswer);
             if (isCorrect) { 
                 score++; 
@@ -1075,4 +987,4 @@
         showWelcomeScreen();
     </script>
 </body>
-</html>
+</html>﻿
